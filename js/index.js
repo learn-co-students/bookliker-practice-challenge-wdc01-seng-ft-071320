@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function() {
     usersUrl = "http://localhost:3000/users/"
     const bookList = document.querySelector("#list")
     const showPanel = document.querySelector("#show-panel")
+
     //fetch all books and post once DOM is loaded
     fetch(booksUrl)
     .then(res => res.json())
