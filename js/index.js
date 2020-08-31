@@ -1,6 +1,7 @@
 const url = 'http://localhost:3000/books/'
 const ulList = document.querySelector('ul#list')
 const showDiv = document.querySelector('div#show-panel')
+let addPourus = true
 function showBookPanel(book){}
 fetch(url)
 .then(response => response.json())
@@ -24,60 +25,65 @@ function displayBook(book){
         const description = document.createElement('p')
         description.innerText = book.description
         const ulUsers = document.createElement('ul')
-
-        for (let i = 0; i < book.users.length; i++){
-            const liUser = document.createElement('li')
-            liUser.innerText = book.users[i].username
-            ulUsers.append(liUser)
-        }
+            for (let i = 0; i < book.users.length; i++){
+                const liUser = document.createElement('li')
+                liUser.innerText = book.users[i].username
+                ulUsers.append(liUser)
+            }
         const likeBtn = document.createElement('button')
-        likeBtn.innerText = "LIKE"
-        
-        
-        likeBtn.addEventListener('click', () => {
-            if (likeBtn.innerText = "LIKE"){
-                likeBtn.innerText = "UNLIKE"
-            const bodyUsers = []
-                for (let i = 0; i < book.users.length; i++){
-                bodyUsers.push({id: book.users[i].id, username: book.users[i].username})
-                }
-            bodyUsers.push({id: 1, username: "pouros"})
-            fetch(url+book.id, {
-                method: "PATCH",
-                headers: {"Content-Type": "application/json", 
-                Accept: "application/json"},
-                body: JSON.stringify({
-                    users: bodyUsers
-                })
-            })
-            .then(resp => resp.json())
-            .then(updatedBook => {
-                const newUserLi = document.createElement('li')
-                newUserLi.innerText = updatedBook.users[updatedBook.users.length -1].username
-                ulUsers.append(newUserLi)
-                showDiv.append(ulUsers)
-            })
-        }
-        else {
-            likeBtn.innerText = "LIKE"
-            book.users.pop
-            console.log(book.users)
-            
-            // fetch(url+book.id, {
-            //     method: "PATCH",
-            //     headers: {"Content-Type": "application/json", 
-            //     Accept: "application/json"},
-            //     body: JSON.stringify({
-            //         users: bodyUsers
-            //     })
-            // })
-            // .then(resp => resp.json())
-            // .then(updatedBook => {
-            //     console.log(updatedBook)
-            // })
-        }
-        })
-        
+        addPourus ? likeBtn.innerText = "LIKE" : likeBtn.innerText = "UNLIKE"
         showDiv.append(img, title, subtitle, author, description, ulUsers, likeBtn)
+
+            likeBtn.addEventListener('click', () => {
+                    if (addPourus){
+                                addPourus = !addPourus
+                            const bodyUsers = []
+                                for (let i = 0; i < book.users.length; i++){
+                                bodyUsers.push({id: book.users[i].id, username: book.users[i].username})
+                                }
+                            bodyUsers.push({id: 1, username: "pouros"})
+                            fetch(url+book.id, {
+                                method: "PATCH",
+                                headers: {"Content-Type": "application/json", 
+                                Accept: "application/json"},
+                                body: JSON.stringify({
+                                    users: bodyUsers
+                                })
+                            })
+                            .then(resp => resp.json())
+                            .then(updatedBook => {
+                                const newUserLi = document.createElement('li')
+                                newUserLi.className = "pourus"
+                                newUserLi.innerText = updatedBook.users[updatedBook.users.length -1].username
+                                
+                                ulUsers.append(newUserLi)
+                                showDiv.append(ulUsers)
+                                addPourus ? likeBtn.innerText = "LIKE" : likeBtn.innerText = "UNLIKE"
+                            })
+                        }
+                    else {
+                            addPourus = !addPourus
+                            addPourus ? likeBtn.innerText = "LIKE" : likeBtn.innerText = "UNLIKE"
+                            book.users.pop
+                            
+                            fetch(url+book.id, {
+                                method: "PATCH",
+                                headers: {"Content-Type": "application/json", 
+                                Accept: "application/json"},
+                                body: JSON.stringify({
+                                    users: book.users
+                                })
+                            })
+                            .then(resp => resp.json())
+                            .then(updatedBook => {
+                                const pourusLi = document.querySelector('li.pourus')
+                                pourusLi.innerText = ""
+                                pourusLi.remove()
+
+                            })
+                        }
+                        })
+        
+       
     })
 }
