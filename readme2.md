@@ -1,7 +1,7 @@
 const url = 'http://localhost:3000/books/'
 const ulList = document.querySelector('ul#list')
 const showDiv = document.querySelector('div#show-panel')
-function showBookPanel(book){}
+
 fetch(url)
 .then(response => response.json())
 .then(booksArray => booksArray.forEach(book => displayBook(book)))
@@ -11,8 +11,10 @@ function displayBook(book){
     li.innerText = book.title
     ulList.append(li)
 
-    li.addEventListener('click', () => {
-        showDiv.innerHTML = ""
+    li.addEventListener('click', showBookPanel())
+}
+function showBookPanel(book){
+    showDiv.innerHTML = ""
         const img = document.createElement('img')
         img.src = book.img_url
         const title = document.createElement('h2')
@@ -79,5 +81,5 @@ function displayBook(book){
         })
         
         showDiv.append(img, title, subtitle, author, description, ulUsers, likeBtn)
-    })
-}
+    }
+
